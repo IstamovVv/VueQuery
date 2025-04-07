@@ -6,11 +6,11 @@
 
     <div>
       <div
-        v-if="bonuses"
-        :class="$style.bonusContainer"
+        v-if="data"
+        :class="$style.container"
       >
         <el-card
-          v-for="bonus in bonuses"
+          v-for="bonus in data"
           :key="bonus.name"
         >
           <template #header>
@@ -30,7 +30,7 @@
       </div>
 
       <div v-else-if="isGetError">
-        Error: {{ getError }}
+        Error: {{ getError?.message || 'unknown error' }}
       </div>
     </div>
   </div>
@@ -43,71 +43,37 @@
 </template>
 
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query';
-import { ref } from 'vue';
-
-import {
-  useBonusCreateMutation,
-  useBonusGetQuery,
-  useBonusTagAddMutation,
-  useBonusTagDeleteMutation
-} from '@/pages/Bonus/Bonus.composables.ts';
+import { useBonusPage } from '@/pages/Bonus/Bonus.composables.ts';
 import BonusDialog from '@/pages/Bonus/BonusDialog/BonusDialog.vue';
 import BonusTags from '@/pages/Bonus/BonusTags/BonusTags.vue';
-import { showNotification } from '@/utils';
 
-const queryClient = useQueryClient()
+const {
+  dialogModel,
+  getQueryData,
+  createMutationData,
+  createBonus,
+  addTag,
+  removeTag,
+} = useBonusPage()
 
-const dialogModel = ref<boolean>(false);
+const {
+  data,
+  isPending: isGetPending,
+  isError: isGetError,
+  error: getError
+} = getQueryData
 
-const openDialog = () => {
-  dialogModel.value = true;
-}
+const {
+  isPending: isCreatePending,
+} = createMutationData
 
-const { data: bonuses, isPending: isGetPending, isError: isGetError, error: getError } = useBonusGetQuery()
-
-const { isPending: isCreatePending, mutate } = useBonusCreateMutation(queryClient, {
-  onSuccess: () => {
-    dialogModel.value = false;
-  },
-  onError: () => {
-    showNotification('failed to create bonus')
-  }
-})
-
-const createBonus = (name: string) => {
-  mutate(name)
-}
-
-const { mutate: addMutate } = useBonusTagAddMutation(queryClient, {
-  onSuccess: () => {
-    showNotification('tag successfully added')
-  },
-  onError: () => {
-    showNotification('failed to add tag')
-  }
-})
-
-const { mutate: deleteMutate } = useBonusTagDeleteMutation(queryClient, {
-  onSuccess: () => {
-    showNotification('tag successfully deleted')
-  },
-  onError: () => {
-    showNotification('failed to delete tag')
-  }
-})
-
-const addTag = (name: string, tagId: string) => {
-  addMutate({ name, tagId })
-}
-
-const removeTag = (name: string, tagId: string) => {
-  deleteMutate({ name, tagId })
+const openDialog = (): void => {
+  dialogModel.value = true
 }
 </script>
 
 <style module lang="sass">
-.bonusContainer
+.container
   margin-top: 10px
   gap: 10px
   display: grid
