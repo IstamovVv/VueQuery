@@ -101,15 +101,15 @@ import type { TableFiltersDefinition } from '@/pages/Table/Table.types.ts';
 import { useTableFilters } from '@/pages/Table/TableFilters/TableFilters.composables.ts';
 import TableFiltersNameSelect from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.vue';
 
+const _model = defineModel<TableFiltersDefinition>({
+  required: true
+})
+
 const {
   apply,
   search,
   model,
-} = useTableFilters(
-  defineModel<TableFiltersDefinition>({
-    required: true
-  })
-)
+} = useTableFilters(_model)
 </script>
 
 <style module lang="sass">
