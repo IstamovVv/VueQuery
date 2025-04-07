@@ -10,8 +10,8 @@
       </el-button>
     </template>
 
-    <div :class="$style.popoverInner">
-      <h2 :class="$style.popoverHeader">
+    <div :class="$style.container">
+      <h2 :class="$style.header">
         Filters
       </h2>
 
@@ -19,7 +19,7 @@
         <el-form-item label="id range">
           <el-col :span="11">
             <el-input
-              v-model="modelProxy.idFrom"
+              v-model="model.idFrom"
               type="number"
             />
           </el-col>
@@ -34,7 +34,7 @@
 
           <el-col :span="11">
             <el-input
-              v-model="modelProxy.idTo"
+              v-model="model.idTo"
               type="number"
             />
           </el-col>
@@ -43,7 +43,7 @@
         <el-form-item label="date range">
           <el-col :span="11">
             <el-date-picker
-              v-model="modelProxy.dateFrom"
+              v-model="model.dateFrom"
               type="date"
               aria-label="Pick a date"
               placeholder="Pick a date"
@@ -61,7 +61,7 @@
 
           <el-col :span="11">
             <el-date-picker
-              v-model="modelProxy.dateTo"
+              v-model="model.dateTo"
               type="date"
               aria-label="Pick a date"
               placeholder="Pick a date"
@@ -72,11 +72,11 @@
 
         <el-form-item label="Name">
           <TableFiltersNameSelect
-            v-model="modelProxy.name"
+            v-model="model.name"
           />
         </el-form-item>
 
-        <div :class="$style.popoverActions">
+        <div :class="$style.actions">
           <el-button>Cancel</el-button>
 
           <el-button
@@ -97,41 +97,29 @@
 </template>
 
 <script setup lang="ts">
-import { watchDebounced } from '@vueuse/core';
-import { ref, watch } from 'vue';
-
 import type { TableFiltersDefinition } from '@/pages/Table/Table.types.ts';
+import { useTableFilters } from '@/pages/Table/TableFilters/TableFilters.composables.ts';
 import TableFiltersNameSelect from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.vue';
 
-const model = defineModel<TableFiltersDefinition>({
-  required: true
-})
-
-const modelProxy = ref<TableFiltersDefinition>({ ...model.value })
-
-watch(model, m => {
-  modelProxy.value = { ...m }
-})
-
-const search = ref<string>('')
-
-watchDebounced(search, v => {
-  model.value.search = v
-}, { debounce: 1000 })
-
-const apply = () => {
-  model.value = { ...modelProxy.value }
-}
+const {
+  apply,
+  search,
+  model,
+} = useTableFilters(
+  defineModel<TableFiltersDefinition>({
+    required: true
+  })
+)
 </script>
 
 <style module lang="sass">
-.popoverInner
+.container
   width: 500px
 
-.popoverHeader
+.header
   margin-bottom: 20px
 
-.popoverActions
+.actions
   display: flex
   justify-content: end
 </style>
