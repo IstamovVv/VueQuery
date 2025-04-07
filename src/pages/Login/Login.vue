@@ -105,7 +105,7 @@ const login = async (): Promise<void> => {
       })
     }
   } catch {
-    showNotification('check form')
+    showNotification('invalid form')
   }
 }
 </script>

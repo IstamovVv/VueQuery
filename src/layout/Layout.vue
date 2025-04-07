@@ -1,12 +1,12 @@
 <template>
   <el-icon
     v-if="isFetching"
-    class="global-loading-icon"
+    :class="$style.loading"
   >
     <Loading />
   </el-icon>
 
-  <div class="main-layout">
+  <div :class="$style.layout">
     <el-container>
       <Header />
 
@@ -27,36 +27,32 @@
 import { Loading } from '@element-plus/icons-vue';
 import { useIsFetching } from '@tanstack/vue-query';
 
+import Header from '@/layout/Header.vue'
 import SideBar from '@/layout/SideBar.vue';
 
 const isFetching = useIsFetching()
 </script>
 
-<style scoped lang="sass">
-.main-layout
-  & > .el-container
+<style module lang="sass">
+.layout
+  & > :global(.el-container)
     height: 100vh
     display: flex
     flex-direction: column
 
-  .el-aside
+  :global(.el-aside)
+    text-align: center
+    color: var(--el-text-color-primary)
     background-color: var(--el-color-primary-light-8)
-    color: var(--el-text-color-primary)
-    text-align: center
 
-  .el-header, .el-footer
-    background-color: var(--el-color-primary-light-7)
-    color: var(--el-text-color-primary)
-    text-align: center
-
-.global-loading-icon
-  position: absolute
+.loading
   top: 10px
   left: 10px
   font-size: 40px
-  animation: globalLoadingIconAnimation 3s linear infinite
+  position: absolute
+  animation: animation 3s linear infinite
 
-@keyframes globalLoadingIconAnimation
+@keyframes animation
   0%
     transform: rotate(0deg)
   100%
