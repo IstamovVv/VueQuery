@@ -1,5 +1,6 @@
 <template>
   <el-popover
+    ref="popover"
     width="auto"
     trigger="click"
     placement="bottom-start"
@@ -77,7 +78,9 @@
         </el-form-item>
 
         <div :class="$style.actions">
-          <el-button>Cancel</el-button>
+          <el-button @click="hidePopover">
+            Cancel
+          </el-button>
 
           <el-button
             type="primary"
@@ -97,6 +100,9 @@
 </template>
 
 <script setup lang="ts">
+import type { PopoverInstance } from 'element-plus';
+import { useTemplateRef } from 'vue';
+
 import type { TableFiltersDefinition } from '@/pages/Table/Table.types.ts';
 import { useTableFilters } from '@/pages/Table/TableFilters/TableFilters.composables.ts';
 import TableFiltersNameSelect from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.vue';
@@ -110,6 +116,12 @@ const {
   search,
   model,
 } = useTableFilters(_model)
+
+const popoverRef = useTemplateRef<PopoverInstance>('popover')
+
+const hidePopover = (): void => {
+  popoverRef.value?.hide()
+}
 </script>
 
 <style module lang="sass">
