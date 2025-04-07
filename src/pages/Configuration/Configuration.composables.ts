@@ -69,7 +69,8 @@ export const useConfigurationPage = (): UseConfigurationPage => {
     }
 
     return form.tokenLifeTime !== query.data.value.tokenLifeTime ||
-      form.errorChance !== query.data.value.errorChance
+      form.errorChance !== query.data.value.errorChance ||
+      form.requestDelay !== query.data.value.requestDelay
   })
 
   const mutation = useConfigurationMutation(queryClient, {

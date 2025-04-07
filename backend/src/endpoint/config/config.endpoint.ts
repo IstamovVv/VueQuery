@@ -14,11 +14,11 @@ const { check: checkAuth } = useAuth();
 
 export const registerConfig = (app: Express): void => {
   app.get('/api/v1/config', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
-
-    const config = useConfig()
 
     const result = {
       tokenLifeTime: config.tokenLifeTime === 0 ? config.tokenLifeTime : config.tokenLifeTime / 1000,
@@ -30,11 +30,11 @@ export const registerConfig = (app: Express): void => {
   })
 
   app.post('/api/v1/config', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
-
-    const config = useConfig();
 
     const { tokenLifeTime, requestDelay, errorChance } = request.body
 

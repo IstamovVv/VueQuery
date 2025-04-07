@@ -2,13 +2,16 @@ import { Express } from 'express';
 
 import { wait } from '../../utils';
 import { useAuth } from '../auth/auth.service';
+import { useConfig } from '../config/config.state';
 import { useBonusState } from './bonus.state';
 
 const { check: checkAuth } = useAuth();
 
 export const registerBonus = (app: Express): void => {
   app.get('/api/v1/bonus', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 
@@ -18,7 +21,9 @@ export const registerBonus = (app: Express): void => {
   })
 
   app.get('/api/v1/tag', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 
@@ -28,7 +33,9 @@ export const registerBonus = (app: Express): void => {
   })
 
   app.post('/api/v1/tag', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 
@@ -53,7 +60,9 @@ export const registerBonus = (app: Express): void => {
   })
 
   app.post('/api/v1/bonus', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 
@@ -79,7 +88,9 @@ export const registerBonus = (app: Express): void => {
   })
 
   app.post('/api/v1/bonus/tag', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 
@@ -135,7 +146,9 @@ export const registerBonus = (app: Express): void => {
   })
 
   app.delete('/api/v1/bonus/tag', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 

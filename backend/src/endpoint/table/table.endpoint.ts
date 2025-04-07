@@ -5,6 +5,7 @@ import { parseSortParameter } from '../../utils/sort/sort';
 import { SortPair } from '../../utils/sort/sort.types';
 import { ResponseWithTotal } from '../../utils/types';
 import { useAuth } from '../auth/auth.service';
+import { useConfig } from '../config/config.state';
 import { useTableState } from './table.state';
 import { TableRow } from './table.types';
 import { tableRowSortFunctions } from './table.utilities';
@@ -13,7 +14,9 @@ const { check: checkAuth } = useAuth();
 
 export const registerTable = (app: Express): void => {
   app.get('/api/v1/table', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 
@@ -140,7 +143,9 @@ export const registerTable = (app: Express): void => {
   })
 
   app.get('/api/v1/table/name/suggestions', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
 

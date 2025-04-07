@@ -1,13 +1,16 @@
 import { Express } from 'express';
 
 import { wait } from '../../utils';
+import { useConfig } from '../config/config.state';
 import { useTodoState } from './todo.state';
 
 export const registerTodo = (app: Express): void => {
   const { todos } = useTodoState()
 
   app.get('/api/v1/todo', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     const error = request.query.error === 'true'
 
@@ -20,14 +23,12 @@ export const registerTodo = (app: Express): void => {
     const result = [...todos]
 
     if (request.query.flagOne === 'true') {
-      await wait(1000);
       result.push({
         text: 'flagOne'
       })
     }
 
     if (request.query.flagTwo === 'true') {
-      await wait(1000);
       result.push({
         text: 'flagTwo'
       })
@@ -37,7 +38,9 @@ export const registerTodo = (app: Express): void => {
   })
 
   app.post('/api/v1/todo', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     const error = request.query.error === 'true'
 
@@ -69,7 +72,9 @@ export const registerTodo = (app: Express): void => {
   }
 
   app.get('/api/v1/todo/paginated', async (request, response) => {
-    await wait(1000);
+    const config = useConfig()
+
+    await wait(config.requestDelay);
 
     const error = request.query.error === 'true'
 
