@@ -5,9 +5,17 @@
         Todo
       </el-menu-item>
     </router-link>
+
+    <router-link :to="{ name: 'Bonus' }">
+      <el-menu-item>
+        Bonus
+      </el-menu-item>
+    </router-link>
   </el-menu>
 </template>
 
+<script setup lang="ts">
+</script>
 <style module lang="sass">
 .menu
   text-align: center
