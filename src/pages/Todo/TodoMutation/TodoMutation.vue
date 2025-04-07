@@ -54,58 +54,15 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultError } from '@tanstack/query-core';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
-import { computed, ref } from 'vue';
+import { useTodoMutationPage } from '@/pages/Todo/TodoMutation/TodoMutation.composables.ts';
 
-import { api } from '@/api';
-import type { Todo } from '@/pages/Todo/Todo.types.ts';
-import { showConfirmation, showNotification } from '@/utils';
-
-const inputText = ref<string>('')
-const fetchError = ref<boolean>(false);
-
-const queryClient = useQueryClient()
-
-const { isPending, isError, error, isSuccess, mutate } = useMutation<null, DefaultError, Todo>({
-  mutationFn: async (newTodo) => {
-    return api.post('/api/v1/todo', undefined, {
-      params: {
-        text: newTodo.text,
-        error: fetchError.value,
-      }
-    })
-  },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['todo'] })
-  }
-})
-
-const createTodo = () => {
-  if (inputText.value === '') {
-    showNotification('Empty name')
-
-    return
-  }
-
-  showConfirmation('Creating TODO', `Do you really want to create todo ${inputText.value}`).then(() => {
-    mutate({ text: inputText.value })
-  })
-}
-
-const tableData = computed(() => [{
-  label: 'isPending',
-  value: isPending.value
-}, {
-  label: 'isSuccess',
-  value: isSuccess.value
-}, {
-  label: 'isError',
-  value: isError.value
-}, {
-  label: 'error',
-  value: error.value
-}])
+const {
+  isPending,
+  inputText,
+  fetchError,
+  createTodo,
+  tableData
+} = useTodoMutationPage()
 </script>
 
 <style module lang="sass">

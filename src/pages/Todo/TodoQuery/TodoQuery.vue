@@ -59,8 +59,8 @@
         label="value"
       >
         <template #default="{ row }">
-          <template v-if="['true', 'false'].includes(row.value)">
-            <div :class="$style[row.value]">
+          <template v-if="typeof row.value === 'boolean'">
+            <div :class="$style[String(row.value)]">
               {{ row.value }}
             </div>
           </template>

@@ -5,7 +5,7 @@ import { api } from '@/api';
 import type { Todo } from '@/pages/Todo/Todo.types.ts';
 import type {
   UseTodoQueryDependencies, UseTodoQueryPageReturnType,
-  UseTodoQueryPageTableDataParameters, UseTodoQueryPageTableDataReturnType, UseTodoQueryPageTableDataType,
+  UseTodoQueryPageTableDataReturnType, UseTodoQueryPageTableDataType,
   UseTodoQueryReturnType
 } from '@/pages/Todo/TodoQuery/TodoQuery.types.ts';
 
@@ -38,13 +38,13 @@ export const useTodoQueryPage = (): UseTodoQueryPageReturnType => {
 }
 
 export const useTodoQueryPageTableData =
-  (parameters: UseTodoQueryPageTableDataParameters): UseTodoQueryPageTableDataReturnType => {
+  (queryData: UseTodoQueryReturnType): UseTodoQueryPageTableDataReturnType => {
     const data = computed<UseTodoQueryPageTableDataType[]>(() => {
-      const keys = Object.keys(parameters) as (keyof UseTodoQueryPageTableDataParameters)[]
+      const keys = Object.keys(queryData) as (keyof UseTodoQueryReturnType)[]
 
       return keys.map<UseTodoQueryPageTableDataType>(key => ({
         label: key as string,
-        value: String(parameters[key].value)
+        value: queryData[key]
       }))
     })
 

@@ -20,12 +20,9 @@ export interface UseTodoQueryDependencies {
 
 export type UseTodoQueryReturnType = UseQueryReturnType<Todo[], DefaultError>
 
-export type UseTodoQueryPageTableDataParameters = Pick<UseTodoQueryReturnType,
-  'isPending' | 'isFetching' | 'isError' | 'error' | 'failureCount' | 'failureReason'>
-
 export type UseTodoQueryPageTableDataType = {
   label: string,
-  value: string,
+  value: unknown,
 }
 
 export type UseTodoQueryPageTableDataReturnType = {

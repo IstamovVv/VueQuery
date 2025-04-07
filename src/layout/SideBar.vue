@@ -10,7 +10,7 @@
 
 <style module lang="sass">
 .menu
-  background-color: var(--el-color-primary-light-8)
-  color: var(--el-text-color-primary)
   text-align: center
+  color: var(--el-text-color-primary)
+  background-color: var(--el-color-primary-light-8)
 </style>
