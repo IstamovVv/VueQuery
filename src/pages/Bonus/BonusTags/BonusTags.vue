@@ -1,80 +1,11 @@
-<script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query';
-import { computed, ref } from 'vue';
-
-import type { Bonus } from '@/pages/Bonus/Bonus.types.ts';
-import { useTagsCreateMutation, useTagsGetQuery } from '@/pages/Bonus/BonusTags/BonusTags.composables.ts';
-import { showNotification } from '@/utils';
-
-const queryClient = useQueryClient()
-
-interface Props {
-  bonus: Bonus;
-}
-
-const props = defineProps<Props>()
-
-const emit = defineEmits<{
-  add: [id: string],
-  remove: [id: string]
-}>()
-
-const tags = computed<string[]>(() => {
-  return props.bonus.tags.map(tag => tag.id)
-})
-
-const proxy = computed<string[]>({
-  get() {
-    return tags.value
-  },
-  set(newValue) {
-    const newSet = new Set(newValue)
-    const oldSet = new Set(tags.value)
-
-    const added = newValue.filter(v => !oldSet.has(v))
-    const removed = tags.value.filter(v => !newSet.has(v))
-
-    if (added.length > 0) {
-      emit('add', added[0])
-    }
-
-    if (removed.length > 0) {
-      emit('remove', removed[0])
-    }
-  }
-})
-
-const { data: tagsData, isPending: isGetPending, isError: isGetError, error: getError } = useTagsGetQuery();
-
-const input = ref<string>('')
-
-const { isPending: isCreatePending, mutate } = useTagsCreateMutation(queryClient, {
-  onSuccess: () => {
-    showNotification('tag created')
-    input.value = ''
-  },
-  onError: () => showNotification('failed to create tag')
-})
-
-const createTag = () => {
-  if (!input.value) {
-    showNotification('empty input')
-
-    return
-  }
-
-  mutate(input.value)
-}
-</script>
-
 <template>
   <el-select
-    v-model="proxy"
+    v-model="tags"
     :loading="isGetPending"
     multiple
   >
     <template #header>
-      <div :class="$style.selectHeader">
+      <div :class="$style.header">
         <el-input
           v-model="input"
           :disabled="isCreatePending"
@@ -89,9 +20,9 @@ const createTag = () => {
       </div>
     </template>
 
-    <template v-if="tagsData">
+    <template v-if="data">
       <el-option
-        v-for="tag in tagsData"
+        v-for="tag in data"
         :key="tag"
         :label="tag"
         :value="tag"
@@ -99,13 +30,40 @@ const createTag = () => {
     </template>
 
     <template v-else-if="isGetError">
-      {{ getError?.message }}
+      {{ getError?.message || 'unknown error' }}
     </template>
   </el-select>
 </template>
 
+<script setup lang="ts">
+import { useBonusTags } from '@/pages/Bonus/BonusTags/BonusTags.composables.ts';
+import type { BonusTagsEmits, BonusTagsProps } from '@/pages/Bonus/BonusTags/BonusTags.types.ts';
+
+const props = defineProps<BonusTagsProps>()
+const emit = defineEmits<BonusTagsEmits>()
+
+const {
+  input,
+  tags,
+  createTag,
+  getTagsQueryData,
+  createTagMutationData,
+} = useBonusTags(props, emit)
+
+const {
+  data,
+  error: getError,
+  isError: isGetError,
+  isPending: isGetPending,
+} = getTagsQueryData
+
+const {
+  isPending: isCreatePending
+} = createTagMutationData
+</script>
+
 <style module lang="sass">
-.selectHeader
+.header
   gap: 10px
   display: flex
 </style>

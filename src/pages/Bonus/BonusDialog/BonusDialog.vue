@@ -24,28 +24,29 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
+import type { BonusDialogProps } from '@/pages/Bonus/BonusDialog/BonusDialog.types.ts';
 import { showNotification } from '@/utils';
+
+defineProps<BonusDialogProps>()
 
 const model = defineModel<boolean>({
   required: true,
   default: false
 })
 
-interface Props {
-  loading: boolean
-}
-
-defineProps<Props>()
+const emit = defineEmits<{
+  create: [name: string]
+}>()
 
 const input = ref<string>('');
 
-const reset = () => {
+const reset = (): void => {
   input.value = '';
 }
 
 watch(model, reset)
 
-const create = () => {
+const create = (): void => {
   if (!input.value) {
     showNotification('Enter name')
 
@@ -54,10 +55,6 @@ const create = () => {
 
   emit('create', input.value);
 }
-
-const emit = defineEmits<{
-  create: [name: string]
-}>()
 </script>
 
 <style module lang="sass">
