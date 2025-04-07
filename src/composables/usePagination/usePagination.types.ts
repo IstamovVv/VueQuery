@@ -5,7 +5,7 @@ export interface UsePaginationData {
   total: number,
 }
 
-export interface UsePaginationReturn {
+export interface UsePaginationReturnType {
   page: WritableComputedRef<number>
   total: WritableComputedRef<number>
   offset: ComputedRef<number>

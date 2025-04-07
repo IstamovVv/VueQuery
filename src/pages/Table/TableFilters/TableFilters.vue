@@ -101,7 +101,7 @@ import { watchDebounced } from '@vueuse/core';
 import { ref, watch } from 'vue';
 
 import type { TableFiltersDefinition } from '@/pages/Table/Table.types.ts';
-import TableFiltersNameSelect from '@/pages/Table/TableFiltersNameSelect.vue';
+import TableFiltersNameSelect from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.vue';
 
 const model = defineModel<TableFiltersDefinition>({
   required: true

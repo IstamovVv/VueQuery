@@ -1,10 +1,10 @@
 import { computed } from 'vue';
 
 import { DEFAULT_PAGE, DEFAULT_TOTAL } from '@/composables/usePagination/usePagination.constants.ts';
-import type { UsePaginationData, UsePaginationReturn } from '@/composables/usePagination/usePagination.types.ts';
+import type { UsePaginationData, UsePaginationReturnType } from '@/composables/usePagination/usePagination.types.ts';
 import { useQueryModel } from '@/composables/useQueryModel/useQueryModel.ts';
 
-export const usePagination = (limit: number): UsePaginationReturn => {
+export const usePagination = (limit: number): UsePaginationReturnType => {
   const data = useQueryModel<UsePaginationData>({
     page: {
       default: DEFAULT_PAGE,

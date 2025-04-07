@@ -4,7 +4,7 @@
   </div>
 
   <div v-if="isError">
-    Error: {{ error }}
+    Error: {{ error?.message || 'unknown error' }}
   </div>
 
   <el-table
@@ -30,39 +30,41 @@
   <el-pagination
     v-if="total > 0"
     v-model:current-page="page"
-    :page-size="LIMIT"
+    :page-size="TABLE_QUERY_LIMIT"
     :total="total"
     layout="prev, pager, next"
   />
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
-
-import { usePagination } from '@/composables/usePagination/usePagination.ts';
-import { useSort } from '@/composables/useSort/useSort.ts';
-import { useTableColumns, useTableFilters, useTableQuery } from '@/pages/Table/Table.composables.ts';
-import type { TableRow } from '@/pages/Table/Table.types.ts';
-import TableFilters from '@/pages/Table/TableFilters.vue';
+import { useTablePage } from '@/pages/Table/Table.composables.ts';
+import { TABLE_QUERY_LIMIT } from '@/pages/Table/Table.constants.ts';
+import TableFilters from '@/pages/Table/TableFilters/TableFilters.vue';
 import TableHeaderSort from '@/pages/Table/TableHeaderSort.vue';
 
-const LIMIT = 10
+const {
+  columns,
+  sortModel,
+  filterModel,
+  paginationModel,
+  getTableQueryData,
+} = useTablePage()
 
-const { columns } = useTableColumns()
-const { filterModel } = useTableFilters()
-const { page, total, offset } = usePagination(LIMIT)
-const { data: sort, query: sortQuery } = useSort<TableRow>(['id', 'name', 'date', 'count'])
+const {
+  sort
+} = sortModel
 
-const { data, isPending, isError, error } = useTableQuery({
-  offset,
-  limit: LIMIT,
-  sort: sortQuery,
-  filter: filterModel,
-})
+const {
+  page,
+  total,
+} = paginationModel
 
-watch(data, v => {
-  if (v) total.value = v.totalSize;
-})
+const {
+  data,
+  error,
+  isError,
+  isPending
+} = getTableQueryData
 </script>
 
 <style module lang="sass">

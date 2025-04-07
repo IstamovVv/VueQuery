@@ -1,20 +1,49 @@
 import type { DefaultError } from '@tanstack/query-core';
 import { type InfiniteData, type QueryKey, useInfiniteQuery, useQuery } from '@tanstack/vue-query';
 import type { MaybeRef } from '@vueuse/core';
-import { toValue } from 'vue';
+import { toValue, watch } from 'vue';
 
 import { api } from '@/api';
+import { usePagination } from '@/composables/usePagination/usePagination.ts';
 import { useQueryModel } from '@/composables/useQueryModel/useQueryModel.ts';
-import { NAME_SUGGESTIONS_LIMIT, TABLE_KEY } from '@/pages/Table/Table.constants.ts';
+import { useSort } from '@/composables/useSort/useSort.ts';
+import { NAME_SUGGESTIONS_LIMIT, TABLE_KEY, TABLE_QUERY_LIMIT } from '@/pages/Table/Table.constants.ts';
 import type {
   TableColumn,
   TableFiltersDefinition,
-  TableRow,
-  UseTableGetQueryDependencies
+  TableRow, UseTableColumnsReturnType, UseTableFiltersReturnType,
+  UseTableGetQueryDependencies, UseTableNameSuggestionsQueryReturnType, UseTablePageReturnType, UseTableQueryReturnType
 } from '@/pages/Table/Table.types.ts';
 import type { ResponseWithTotal } from '@/types';
 
-export const useTableQuery = (deps: UseTableGetQueryDependencies) => {
+export const useTablePage = (): UseTablePageReturnType => {
+  const { columns } = useTableColumns()
+  const { filterModel } = useTableFilters()
+
+  const paginationModel = usePagination(TABLE_QUERY_LIMIT)
+  const sortModel = useSort<TableRow>(['id', 'name', 'date', 'count'])
+
+  const getTableQueryData = useTableQuery({
+    offset: paginationModel.offset,
+    limit: TABLE_QUERY_LIMIT,
+    sort: sortModel.query,
+    filter: filterModel,
+  })
+
+  watch(getTableQueryData.data, v => {
+    if (v) paginationModel.total.value = v.totalSize;
+  })
+
+  return {
+    columns,
+    sortModel,
+    filterModel,
+    paginationModel,
+    getTableQueryData,
+  }
+}
+
+export const useTableQuery = (deps: UseTableGetQueryDependencies): UseTableQueryReturnType => {
   return useQuery<ResponseWithTotal<TableRow>>({
     queryKey: [TABLE_KEY, ...Object.values(deps)],
     queryFn: async({ signal }) => {
@@ -51,7 +80,7 @@ export const useTableQuery = (deps: UseTableGetQueryDependencies) => {
   })
 }
 
-export const useTableNameSuggestionsQuery = (search: MaybeRef<string>) => {
+export const useTableNameSuggestionsQuery = (search: MaybeRef<string>): UseTableNameSuggestionsQueryReturnType => {
   return useInfiniteQuery<string[], DefaultError, InfiniteData<string[]>, QueryKey, number>({
     queryKey: [TABLE_KEY, search],
     queryFn: async ({ signal, pageParam }) => {
@@ -84,7 +113,7 @@ export const useTableNameSuggestionsQuery = (search: MaybeRef<string>) => {
   })
 }
 
-export const useTableFilters = () => {
+export const useTableFilters = (): UseTableFiltersReturnType => {
   const filterModel = useQueryModel<TableFiltersDefinition>({
     search: {
       default: '',
@@ -118,7 +147,7 @@ export const useTableFilters = () => {
   }
 }
 
-export const useTableColumns = () => {
+export const useTableColumns = (): UseTableColumnsReturnType => {
   const columns: TableColumn[] = [
     { prop: 'id', label: 'Id' },
     { prop: 'name', label: 'Name' },

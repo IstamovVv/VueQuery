@@ -1,4 +1,13 @@
-import type { MaybeRef } from 'vue';
+import type { DefaultError } from '@tanstack/query-core';
+import {
+  type InfiniteData,
+  type UseInfiniteQueryReturnType, type UseQueryReturnType,
+} from '@tanstack/vue-query';
+import type { MaybeRef, Ref } from 'vue';
+
+import type { UsePaginationReturnType } from '@/composables/usePagination/usePagination.types.ts';
+import type { UseSortReturnType } from '@/composables/useSort/useSort.types.ts';
+import type { ResponseWithTotal } from '@/types';
 
 export interface TableRow {
   id: number
@@ -26,4 +35,25 @@ export interface UseTableGetQueryDependencies {
   limit: MaybeRef<number>
   sort: MaybeRef<string[]>
   filter: MaybeRef<TableFiltersDefinition>
+}
+
+export interface UseTablePageReturnType {
+  columns: UseTableColumnsReturnType['columns']
+  sortModel: UseSortReturnType<TableRow>
+  filterModel: UseTableFiltersReturnType['filterModel']
+  paginationModel: UsePaginationReturnType
+  getTableQueryData: UseTableQueryReturnType
+}
+
+export type UseTableQueryReturnType = UseQueryReturnType<ResponseWithTotal<TableRow>, DefaultError>
+
+export type UseTableNameSuggestionsQueryReturnType
+  = UseInfiniteQueryReturnType<InfiniteData<string[]>, DefaultError>
+
+export interface UseTableFiltersReturnType {
+  filterModel: Ref<TableFiltersDefinition>
+}
+
+export interface UseTableColumnsReturnType {
+  columns: TableColumn[]
 }
