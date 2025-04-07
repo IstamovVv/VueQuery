@@ -8,7 +8,7 @@
       <el-form
         ref="formRef"
         :model="form"
-        :rules="formRules"
+        :rules="rules"
         label-width="auto"
       >
         <el-form-item
@@ -45,69 +45,19 @@
 </template>
 
 <script setup lang="ts">
-import type { DefaultError } from '@tanstack/query-core';
-import { useMutation } from '@tanstack/vue-query';
-import type { FormInstance, FormRules } from 'element-plus';
-import { reactive, useTemplateRef } from 'vue';
+import type { FormInstance } from 'element-plus';
+import { useTemplateRef } from 'vue';
 
-import { api } from '@/api';
-import type { AuthRequest, AuthResponse } from '@/pages/Login/Login.types.ts';
-import { useAuthStore } from '@/store/auth/auth.ts';
-import { showNotification } from '@/utils';
-
-interface Form {
-  login: string
-  password: string
-}
-
-const form = reactive<Form>({
-  login: 'admin',
-  password: 'admin',
-})
+import { useLoginPage } from '@/pages/Login/Login.composables.ts';
 
 const formRef = useTemplateRef<FormInstance>('formRef')
 
-const formRules = reactive<FormRules<Form>>({
-  login: [
-    { required: true, message: 'login required', trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: 'password required', trigger: 'blur' },
-  ]
-})
-
-const { token } = useAuthStore()
-
-const { mutate, isPending } = useMutation<AuthResponse, DefaultError, AuthRequest>({
-  mutationFn: async (request: AuthRequest) => {
-    const response = await api.post<AuthResponse>('/api/v1/auth', request)
-
-    return response.data
-  },
-  onSuccess: (data) => {
-    token.value = Number(data.token);
-  },
-  onError: () => {
-    showNotification('failed to auth')
-  }
-})
-
-const login = async (): Promise<void> => {
-  if (!formRef.value) {
-    return
-  }
-
-  try {
-    if (await formRef.value.validate()) {
-      mutate({
-        login: form.login,
-        password: form.password,
-      })
-    }
-  } catch {
-    showNotification('invalid form')
-  }
-}
+const {
+  form,
+  rules,
+  login,
+  isPending
+} = useLoginPage(formRef);
 </script>
 
 <style module lang="sass">
