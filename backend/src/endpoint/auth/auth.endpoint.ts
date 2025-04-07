@@ -3,8 +3,6 @@ import { Express } from 'express';
 import { wait } from '../../utils';
 import { useConfig } from '../config/config.state';
 
-const tokenLife = 30 * 60 * 1000 // 30m token lifetime
-
 const validCredentials = {
   login: 'admin',
   password: 'admin',
@@ -24,7 +22,7 @@ export const registerAuth = (app: Express): void => {
 
     if (request.body.login === validCredentials.login && request.body.password === validCredentials.password) {
       response.status(200).json({
-        token: Date.now() + tokenLife
+        token: Date.now() + config.tokenLifeTime
       })
 
       return
