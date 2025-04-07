@@ -1,18 +1,16 @@
-import type { DefaultError } from '@tanstack/query-core';
-import { type InfiniteData, type QueryKey, useInfiniteQuery, useQuery } from '@tanstack/vue-query';
-import type { MaybeRef } from '@vueuse/core';
+import { useQuery } from '@tanstack/vue-query';
 import { toValue, watch } from 'vue';
 
 import { api } from '@/api';
 import { usePagination } from '@/composables/usePagination/usePagination.ts';
 import { useQueryModel } from '@/composables/useQueryModel/useQueryModel.ts';
 import { useSort } from '@/composables/useSort/useSort.ts';
-import { NAME_SUGGESTIONS_LIMIT, TABLE_KEY, TABLE_QUERY_LIMIT } from '@/pages/Table/Table.constants.ts';
+import { TABLE_KEY, TABLE_QUERY_LIMIT } from '@/pages/Table/Table.constants.ts';
 import type {
   TableColumn,
   TableFiltersDefinition,
   TableRow, UseTableColumnsReturnType, UseTableFiltersReturnType,
-  UseTableGetQueryDependencies, UseTableNameSuggestionsQueryReturnType, UseTablePageReturnType, UseTableQueryReturnType
+  UseTableGetQueryDependencies, UseTablePageReturnType, UseTableQueryReturnType
 } from '@/pages/Table/Table.types.ts';
 import type { ResponseWithTotal } from '@/types';
 
@@ -77,39 +75,6 @@ export const useTableQuery = (deps: UseTableGetQueryDependencies): UseTableQuery
 
       return response.data
     },
-  })
-}
-
-export const useTableNameSuggestionsQuery = (search: MaybeRef<string>): UseTableNameSuggestionsQueryReturnType => {
-  return useInfiniteQuery<string[], DefaultError, InfiniteData<string[]>, QueryKey, number>({
-    queryKey: [TABLE_KEY, search],
-    queryFn: async ({ signal, pageParam }) => {
-      const parameters: any = {
-        offset: pageParam,
-        limit: NAME_SUGGESTIONS_LIMIT
-      }
-
-      const searchValue = toValue(search)
-
-      if (search) {
-        parameters.search = searchValue
-      }
-
-      const response = await api.get<string[]>('/api/v1/table/name/suggestions', {
-        signal,
-        params: parameters,
-      })
-
-      return response.data
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, _, lastPageParameter) => {
-      if (lastPage.length === 0) {
-        return
-      }
-
-      return lastPageParameter + NAME_SUGGESTIONS_LIMIT
-    }
   })
 }
 

@@ -8,7 +8,7 @@
     placeholder="Select Name"
   >
     <template v-if="isError">
-      {{ error?.message }}
+      {{ error?.message || 'unknown error' }}
     </template>
 
     <template v-else>
@@ -52,31 +52,33 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-
-import { useTableNameSuggestionsQuery } from '@/pages/Table/Table.composables.ts';
-
-const INFINITE_SCROLL_DISTANCE = 400;
+import {
+  useTableFiltersNameSelect,
+} from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.composables.ts';
+import {
+  INFINITE_SCROLL_DISTANCE
+} from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.constants.ts';
 
 const model = defineModel<string[]>({
   required: true
 })
 
-const search = ref<string>('')
+const {
+  search,
+  options,
+  suggestionsQueryData
+} = useTableFiltersNameSelect()
 
 const {
-  data,
   error,
   fetchNextPage,
   hasNextPage,
   isFetchingNextPage,
   isPending,
   isError,
-} = useTableNameSuggestionsQuery(search)
+} = suggestionsQueryData
 
-const options = computed<string[]>(() => data.value?.pages.flat() ?? [])
-
-const filterMethod = (value: string) => {
+const filterMethod = (value: string): void => {
   search.value = value
 }
 </script>

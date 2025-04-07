@@ -1,7 +1,6 @@
 import type { DefaultError } from '@tanstack/query-core';
 import {
-  type InfiniteData,
-  type UseInfiniteQueryReturnType, type UseQueryReturnType,
+  type UseQueryReturnType,
 } from '@tanstack/vue-query';
 import type { MaybeRef, Ref } from 'vue';
 
@@ -46,9 +45,6 @@ export interface UseTablePageReturnType {
 }
 
 export type UseTableQueryReturnType = UseQueryReturnType<ResponseWithTotal<TableRow>, DefaultError>
-
-export type UseTableNameSuggestionsQueryReturnType
-  = UseInfiniteQueryReturnType<InfiniteData<string[]>, DefaultError>
 
 export interface UseTableFiltersReturnType {
   filterModel: Ref<TableFiltersDefinition>
