@@ -1,15 +1,15 @@
 import { computed } from 'vue';
 
-import { useQueryModel } from '@/composables/useQueryModel/useQueryModel.ts';
-import type { UseQueryModelDefinition, UseQueryModelSupportedType } from '@/composables/useQueryModel/useQueryModel.types.ts';
+import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
+import type { UseSearchParametersModelDefinition, UseSearchParametersModelSupportedType } from '@/composables/useSearchParametersModel/useSearchParametersModel.types.ts';
 import type { SortPair, UseSortDataType, UseSortReturnType } from '@/composables/useSort/useSort.types.ts';
 import { SortDirection } from '@/composables/useSort/useSort.types.ts';
 import { isObjectValue } from '@/utils';
 
 export const useSort = <T extends {
-  [K in keyof T]: UseQueryModelSupportedType
+  [K in keyof T]: UseSearchParametersModelSupportedType
 }>(sortable: (keyof T)[]): UseSortReturnType<T> => {
-  const sort = useQueryModel(
+  const sort = useSearchParametersModel(
     sortable.reduce((accumulator, key) => {
       accumulator[key] = {
         default: SortDirection.None,
@@ -17,7 +17,7 @@ export const useSort = <T extends {
       }
 
       return accumulator
-    }, {} as UseQueryModelDefinition<UseSortDataType<T>>), { key: 's' })
+    }, {} as UseSearchParametersModelDefinition<UseSortDataType<T>>), { key: 's' })
 
   const query = computed<string[]>(() => {
     return Object.entries<SortDirection>(sort.value)

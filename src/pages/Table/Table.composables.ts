@@ -3,7 +3,7 @@ import { toValue, watch } from 'vue';
 
 import { api } from '@/api';
 import { usePagination } from '@/composables/usePagination/usePagination.ts';
-import { useQueryModel } from '@/composables/useQueryModel/useQueryModel.ts';
+import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
 import { useSort } from '@/composables/useSort/useSort.ts';
 import { TABLE_KEY, TABLE_QUERY_LIMIT } from '@/pages/Table/Table.constants.ts';
 import type {
@@ -79,7 +79,7 @@ export const useTableQuery = (deps: UseTableGetQueryDependencies): UseTableQuery
 }
 
 export const useTableFilters = (): UseTableFiltersReturnType => {
-  const filterModel = useQueryModel<TableFiltersDefinition>({
+  const filterModel = useSearchParametersModel<TableFiltersDefinition>({
     search: {
       default: '',
     },

@@ -1,6 +1,25 @@
-export interface Serializer<T> {
-  read: (raw: string) => T
-  write: (value: T) => string
+import type { Serializer } from '@/composables/useSearchParametersModel/useSearchParametersModel.types.ts';
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const guessSerializerType = <T extends(string | number | boolean | object | null)>(rawInit: T) => {
+  return rawInit == undefined
+    ? 'any'
+    : rawInit instanceof Set
+      ? 'set'
+      // eslint-disable-next-line unicorn/no-nested-ternary
+      : rawInit instanceof Map
+        ? 'map'
+        : rawInit instanceof Date
+          ? 'date'
+          : typeof rawInit === 'boolean'
+            ? 'boolean'
+            : typeof rawInit === 'string'
+              ? 'string'
+              : typeof rawInit === 'object'
+                ? 'object'
+                : Number.isNaN(rawInit)
+                  ? 'any'
+                  : 'number'
 }
 
 export const QuerySerializers: Record<'boolean' | 'object' | 'number' | 'any' | 'string' | 'map' | 'set' | 'date', Serializer<any>> = {
