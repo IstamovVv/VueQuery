@@ -15,6 +15,12 @@ export const registerBonus = (app: Express): void => {
 
     if (!checkAuth(request, response)) return
 
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
+
     const { bonuses } = useBonusState();
 
     response.status(200).json(bonuses)
@@ -27,6 +33,12 @@ export const registerBonus = (app: Express): void => {
 
     if (!checkAuth(request, response)) return
 
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
+
     const { tags } = useBonusState();
 
     response.status(200).json([...tags.values()])
@@ -38,6 +50,12 @@ export const registerBonus = (app: Express): void => {
     await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const tagId = request.query.tagId
 
@@ -65,6 +83,12 @@ export const registerBonus = (app: Express): void => {
     await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const name = request.query.name
 
@@ -94,7 +118,7 @@ export const registerBonus = (app: Express): void => {
 
     if (!checkAuth(request, response)) return
 
-    if (Math.floor(Math.random()*10) > 5) {
+    if (Math.random() < config.errorChance) {
       response.status(500).send('unexpected error')
 
       return
@@ -152,7 +176,7 @@ export const registerBonus = (app: Express): void => {
 
     if (!checkAuth(request, response)) return
 
-    if (Math.floor(Math.random()*10) > 5) {
+    if (Math.random() < config.errorChance) {
       response.status(500).send('unexpected error')
 
       return

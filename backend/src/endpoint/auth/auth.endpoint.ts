@@ -16,6 +16,12 @@ export const registerAuth = (app: Express): void => {
 
     await wait(config.requestDelay);
 
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
+
     if (request.body.login === validCredentials.login && request.body.password === validCredentials.password) {
       response.status(200).json({
         token: Date.now() + tokenLife

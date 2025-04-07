@@ -20,6 +20,12 @@ export const registerTable = (app: Express): void => {
 
     if (!checkAuth(request, response)) return
 
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
+
     const offset = Number(request.query.offset)
 
     if (Number.isNaN(offset)) {
@@ -148,6 +154,12 @@ export const registerTable = (app: Express): void => {
     await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const offset = Number(request.query.offset)
 

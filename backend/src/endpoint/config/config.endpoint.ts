@@ -20,6 +20,12 @@ export const registerConfig = (app: Express): void => {
 
     if (!checkAuth(request, response)) return
 
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
+
     const result = {
       tokenLifeTime: config.tokenLifeTime === 0 ? config.tokenLifeTime : config.tokenLifeTime / 1000,
       errorChance: config.errorChance === 0 ? config.errorChance : config.errorChance * 100,
@@ -35,6 +41,12 @@ export const registerConfig = (app: Express): void => {
     await wait(config.requestDelay);
 
     if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const { tokenLifeTime, requestDelay, errorChance } = request.body
 

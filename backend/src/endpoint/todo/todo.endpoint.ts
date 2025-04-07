@@ -1,8 +1,11 @@
 import { Express } from 'express';
 
 import { wait } from '../../utils';
+import { useAuth } from '../auth/auth.service';
 import { useConfig } from '../config/config.state';
 import { useTodoState } from './todo.state';
+
+const { check: checkAuth } = useAuth();
 
 export const registerTodo = (app: Express): void => {
   const { todos } = useTodoState()
@@ -11,6 +14,14 @@ export const registerTodo = (app: Express): void => {
     const config = useConfig()
 
     await wait(config.requestDelay);
+
+    if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const error = request.query.error === 'true'
 
@@ -41,6 +52,14 @@ export const registerTodo = (app: Express): void => {
     const config = useConfig()
 
     await wait(config.requestDelay);
+
+    if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const error = request.query.error === 'true'
 
@@ -75,6 +94,14 @@ export const registerTodo = (app: Express): void => {
     const config = useConfig()
 
     await wait(config.requestDelay);
+
+    if (!checkAuth(request, response)) return
+
+    if (Math.random() < config.errorChance) {
+      response.status(500).send('unexpected error')
+
+      return
+    }
 
     const error = request.query.error === 'true'
 
