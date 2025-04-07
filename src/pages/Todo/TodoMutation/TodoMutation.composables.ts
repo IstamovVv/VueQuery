@@ -11,7 +11,7 @@ import type {
   UseTodoMutationParameters,
   UseTodoMutationReturnType
 } from '@/pages/Todo/TodoMutation/TodoMutation.types.ts';
-import { showConfirmation, showNotification } from '@/utils/popup';
+import { showConfirmation, showWarningMessage } from '@/utils/popup';
 
 export const useTodoMutationPage = (): UseTodoMutationPageReturnType => {
   const inputText = ref<string>('')
@@ -29,7 +29,7 @@ export const useTodoMutationPage = (): UseTodoMutationPageReturnType => {
 
   const createTodo = (): void => {
     if (inputText.value === '') {
-      showNotification('Empty name')
+      showWarningMessage('Empty name')
 
       return
     }

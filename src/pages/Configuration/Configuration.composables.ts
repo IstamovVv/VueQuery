@@ -16,7 +16,7 @@ import {
   type UseConfigurationPage,
   type UseConfigurationQueryReturnType
 } from '@/pages/Configuration/Configuration.types.ts';
-import { showNotification } from '@/utils/popup';
+import { showErrorMessage, showSuccessMessage } from '@/utils/popup';
 
 export const useConfigurationPage = (): UseConfigurationPage => {
   const form = reactive<AppConfiguration>({
@@ -75,10 +75,10 @@ export const useConfigurationPage = (): UseConfigurationPage => {
 
   const mutation = useConfigurationMutation(queryClient, {
     onSuccess() {
-      showNotification('Configuration successfully saved')
+      showSuccessMessage('Configuration successfully saved')
     },
     onError() {
-      showNotification('Failed to save configuration')
+      showErrorMessage('Failed to save configuration')
     }
   })
 

@@ -12,7 +12,7 @@ import type {
   UseTagsCreateMutationReturnType,
   UseTagsGetQueryReturnType
 } from '@/pages/Bonus/BonusTags/BonusTags.types.ts';
-import { showNotification } from '@/utils/popup';
+import { showErrorMessage, showSuccessMessage, showWarningMessage } from '@/utils/popup';
 
 export const useBonusTags = (props: BonusTagsProps, emit: EmitFn<BonusTagsEmits>): UseBonusTagsReturnType => {
   const input = ref<string>('')
@@ -47,15 +47,15 @@ export const useBonusTags = (props: BonusTagsProps, emit: EmitFn<BonusTagsEmits>
 
   const createTagMutationData = useTagsCreateMutation(queryClient, {
     onSuccess: () => {
-      showNotification('tag created')
+      showSuccessMessage('tag created')
       input.value = ''
     },
-    onError: () => showNotification('failed to create tag')
+    onError: () => showErrorMessage('failed to create tag')
   })
 
   const createTag = (): void => {
     if (!input.value) {
-      showNotification('empty input')
+      showWarningMessage('empty input')
 
       return
     }

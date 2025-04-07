@@ -15,7 +15,7 @@ import type {
   UseBonusTagDeleteMutationReturnType
 } from '@/pages/Bonus/Bonus.types.ts';
 import { asyncDebounce } from '@/utils/asyncDebounce';
-import { showNotification } from '@/utils/popup';
+import { showErrorMessage, showSuccessMessage } from '@/utils/popup';
 
 export const useBonusPage = (): UseBonusPageReturnType => {
   const queryClient = useQueryClient()
@@ -25,10 +25,11 @@ export const useBonusPage = (): UseBonusPageReturnType => {
 
   const createMutationData = useBonusCreateMutation(queryClient, {
     onSuccess: () => {
+      showSuccessMessage('bonus successfully created')
       dialogModel.value = false;
     },
     onError: () => {
-      showNotification('failed to create bonus')
+      showErrorMessage('failed to create bonus')
     }
   })
 
@@ -38,19 +39,19 @@ export const useBonusPage = (): UseBonusPageReturnType => {
 
   const { mutate: addMutate } = useBonusTagAddMutation(queryClient, {
     onSuccess: () => {
-      showNotification('tag successfully added')
+      showSuccessMessage('tag successfully added')
     },
     onError: () => {
-      showNotification('failed to add tag')
+      showErrorMessage('failed to add tag')
     }
   })
 
   const { mutate: deleteMutate } = useBonusTagDeleteMutation(queryClient, {
     onSuccess: () => {
-      showNotification('tag successfully deleted')
+      showSuccessMessage('tag successfully deleted')
     },
     onError: () => {
-      showNotification('failed to delete tag')
+      showErrorMessage('failed to delete tag')
     }
   })
 

@@ -5,11 +5,34 @@ import {
   type MessageBoxData,
 } from 'element-plus';
 
-export const showNotification = (text: string, props?: NotificationOptions): void => {
+export const showNotification = (text: string): void => {
   ElNotification({
     title: text,
     position: 'bottom-right',
-    ...props
+  })
+}
+
+export const showSuccessMessage = (text: string): void => {
+  ElNotification({
+    title: text,
+    position: 'bottom-right',
+    type: 'success'
+  })
+}
+
+export const showErrorMessage = (text: string): void => {
+  ElNotification({
+    title: text,
+    position: 'bottom-right',
+    type: 'error'
+  })
+}
+
+export const showWarningMessage = (text: string): void => {
+  ElNotification({
+    title: text,
+    position: 'bottom-right',
+    type: 'warning'
   })
 }
 

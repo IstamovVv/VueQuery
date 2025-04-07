@@ -12,7 +12,7 @@ import type {
   UseLoginReturnType
 } from '@/pages/Login/Login.types.ts';
 import { useAuthStore } from '@/store/auth/auth.ts';
-import { showNotification } from '@/utils/popup';
+import { showErrorMessage, showWarningMessage } from '@/utils/popup';
 
 export const useLoginPage = (formRef: Readonly<ShallowRef<FormInstance | null>>): UseLoginReturnType => {
   const { token } = useAuthStore()
@@ -32,7 +32,7 @@ export const useLoginPage = (formRef: Readonly<ShallowRef<FormInstance | null>>)
         })
       }
     } catch {
-      showNotification('invalid form')
+      showWarningMessage('invalid form')
     }
   }
 
@@ -73,7 +73,7 @@ export const useLoginMutation = (token: Ref<number | undefined>): UseLoginMutati
       token.value = Number(data.token);
     },
     onError: () => {
-      showNotification('failed to auth')
+      showErrorMessage('failed to auth')
     }
   })
 }
