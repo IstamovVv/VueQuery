@@ -14,7 +14,8 @@ import type {
   UseBonusTagAddMutationReturnType,
   UseBonusTagDeleteMutationReturnType
 } from '@/pages/Bonus/Bonus.types.ts';
-import { asyncDebounce, showNotification } from '@/utils';
+import { asyncDebounce } from '@/utils/asyncDebounce';
+import { showNotification } from '@/utils/popup';
 
 export const useBonusPage = (): UseBonusPageReturnType => {
   const queryClient = useQueryClient()

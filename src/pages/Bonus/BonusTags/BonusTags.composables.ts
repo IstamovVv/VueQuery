@@ -12,7 +12,7 @@ import type {
   UseTagsCreateMutationReturnType,
   UseTagsGetQueryReturnType
 } from '@/pages/Bonus/BonusTags/BonusTags.types.ts';
-import { showNotification } from '@/utils';
+import { showNotification } from '@/utils/popup';
 
 export const useBonusTags = (props: BonusTagsProps, emit: EmitFn<BonusTagsEmits>): UseBonusTagsReturnType => {
   const input = ref<string>('')

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Bonus from '@/pages/Bonus/Bonus.vue';
+import Table from '@/pages/Table/Table.vue'
 import Todo from '@/pages/Todo/Todo.vue';
 
 const index = createRouter({
@@ -19,6 +20,11 @@ const index = createRouter({
       name: 'Bonus',
       path: '/bonus',
       component: Bonus
+    },
+    {
+      name: 'Table',
+      path: '/table',
+      component: Table
     }
   ]
 })

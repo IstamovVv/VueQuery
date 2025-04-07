@@ -12,7 +12,7 @@ import type {
   UseLoginReturnType
 } from '@/pages/Login/Login.types.ts';
 import { useAuthStore } from '@/store/auth/auth.ts';
-import { showNotification } from '@/utils';
+import { showNotification } from '@/utils/popup';
 
 export const useLoginPage = (formRef: Readonly<ShallowRef<FormInstance | null>>): UseLoginReturnType => {
   const { token } = useAuthStore()

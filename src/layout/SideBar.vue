@@ -11,6 +11,12 @@
         Bonus
       </el-menu-item>
     </router-link>
+
+    <router-link :to="{ name: 'Table' }">
+      <el-menu-item>
+        Table
+      </el-menu-item>
+    </router-link>
   </el-menu>
 </template>
 

@@ -1,8 +1,8 @@
 import type { EmitFn, ModelRef } from 'vue';
 import { ref, watch } from 'vue';
 
-import type { BonusDialogEmits, UseBonusDialogReturnType } from '@/pages/Bonus/BonusDialog/BonusDialog.types.ts';
-import { showNotification } from '@/utils';
+import type { BonusDialogEmits, UseBonusDialogReturnType } from '@/pages/Bonus/BonusDialog/BonusDialog.types.ts'
+import { showNotification } from '@/utils/popup';
 
 export const useBonusDialog = (model: ModelRef<boolean>, emit: EmitFn<BonusDialogEmits>): UseBonusDialogReturnType => {
   const input = ref<string>('');
