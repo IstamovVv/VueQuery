@@ -1,0 +1,13 @@
+export const DEFAULT_TOKEN_LIFETIME_MS = 30 * 60 * 1000
+export const MIN_TOKEN_LIFETIME_MS = 0
+export const MAX_TOKEN_LIFETIME_MS = 24 * 60 * 60 * 1000
+
+export const MIN_TOKEN_LIFETIME_SECONDS = 0
+export const MAX_TOKEN_LIFETIME_SECONDS = MAX_TOKEN_LIFETIME_MS / 1000
+
+export const MIN_ERROR_CHANCE = 0
+export const MAX_ERROR_CHANCE = 100
+
+export const DEFAULT_REQUEST_DELAY_MS = 1000
+export const MIN_REQUEST_DELAY_MS = 0
+export const MAX_REQUEST_DELAY_MS = 60 * 60 * 1000

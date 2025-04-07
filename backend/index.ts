@@ -4,6 +4,7 @@ import express from 'express'
 
 import { registerAuth } from './src/endpoint/auth/auth.endpoint';
 import { registerBonus } from './src/endpoint/bonus/bonus.endpoint';
+import { registerConfig } from './src/endpoint/config/config.endpoint';
 import { registerTable } from './src/endpoint/table/table.endpoint';
 import { registerTodo } from './src/endpoint/todo/todo.endpoint';
 
@@ -16,6 +17,7 @@ registerAuth(app)
 registerTodo(app)
 registerBonus(app)
 registerTable(app)
+registerConfig(app)
 
 const PORT = 8000
 

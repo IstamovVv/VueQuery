@@ -17,6 +17,12 @@
         Table
       </el-menu-item>
     </router-link>
+
+    <router-link :to="{ name: 'Configuration' }">
+      <el-menu-item>
+        Configuration
+      </el-menu-item>
+    </router-link>
   </el-menu>
 </template>
 
