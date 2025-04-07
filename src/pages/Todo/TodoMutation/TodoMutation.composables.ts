@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref, toValue } from 'vue';
 
 import { api } from '@/api';
+import { TODO_QUERY_KEY } from '@/pages/Todo/Todo.constants.ts';
 import type { Todo } from '@/pages/Todo/Todo.types.ts';
 import type {
   UseTodoMutationPageReturnType,
@@ -74,7 +75,7 @@ export const useTodoMutation = (parameters: UseTodoMutationParameters): UseTodoM
       })
     },
     onSuccess: () => {
-      void parameters.client.invalidateQueries({ queryKey: ['todo'] })
+      void parameters.client.invalidateQueries({ queryKey: [TODO_QUERY_KEY] })
     }
   })
 }

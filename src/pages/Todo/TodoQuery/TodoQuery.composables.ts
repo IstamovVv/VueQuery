@@ -2,14 +2,13 @@ import { useQuery } from '@tanstack/vue-query';
 import { computed, ref, toValue } from 'vue';
 
 import { api } from '@/api';
+import { TODO_QUERY_KEY } from '@/pages/Todo/Todo.constants.ts';
 import type { Todo } from '@/pages/Todo/Todo.types.ts';
 import type {
   UseTodoQueryDependencies, UseTodoQueryPageReturnType,
   UseTodoQueryPageTableDataReturnType, UseTodoQueryPageTableDataType,
   UseTodoQueryReturnType
 } from '@/pages/Todo/TodoQuery/TodoQuery.types.ts';
-
-export const TODO_QUERY_KEY = 'todo'
 
 export const useTodoQueryPage = (): UseTodoQueryPageReturnType => {
   const fetchError = ref<boolean>(false);
