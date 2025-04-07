@@ -23,11 +23,23 @@
         Configuration
       </el-menu-item>
     </router-link>
+
+    <el-menu-item @click="logout">
+      Logout
+    </el-menu-item>
   </el-menu>
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '@/store/auth/auth.ts';
+
+const { token } = useAuthStore()
+
+const logout = (): void => {
+  token.value = 0
+}
 </script>
+
 <style module lang="sass">
 .menu
   text-align: center
