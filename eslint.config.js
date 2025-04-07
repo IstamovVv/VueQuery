@@ -154,9 +154,6 @@ export default defineConfig([
       ],
       '@stylistic/padding-line-between-statements': [
         'error',
-        /**
-         * @description Блоки, требующие перед собой пустую строку
-         */
         {
           blankLine: 'always',
           prev: '*',
@@ -171,21 +168,12 @@ export default defineConfig([
             'try',
           ],
         },
-        /**
-         * @description Блоки, требующие после себя пустую строку
-         */
         {
           blankLine: 'always',
           prev: ['expression', 'block-like', 'multiline-let', 'multiline-const', 'function', 'try'],
           next: '*',
         },
-        /**
-         * @description Исключение для группы вызовов функций подряд (можно и так, и эдак)
-         */
         { blankLine: 'any', prev: 'expression', next: 'expression' },
-        /**
-         * @description Исключение для вызовов break на одной строке с case
-         */
         { blankLine: 'any', prev: '*', next: 'break' },
       ],
       '@stylistic/object-curly-spacing': ['error', 'always'],
