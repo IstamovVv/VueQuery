@@ -5,8 +5,11 @@ import Login from '@/pages/Login/Login.vue';
 
 const {
   authorized,
-  isLoading
+  isLoading,
+  prefetch,
 } = useApp()
+
+prefetch()
 </script>
 
 <template>

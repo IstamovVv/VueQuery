@@ -76,12 +76,21 @@ export const useBonusPage = (): UseBonusPageReturnType => {
 export const useBonusGetQuery = (): UseBonusGetQueryReturnType => {
   return useQuery<Bonus[], DefaultError>({
     queryKey: [BONUS_QUERY_KEY],
-    queryFn: async ({ signal }) => {
-      const response = await api.get<Bonus[]>('/api/v1/bonus', { signal })
-
-      return response.data
-    }
+    queryFn: bonusGetQueryFunction
   })
+}
+
+export const prefetchBonuses = async (): Promise<void> => {
+  await useQueryClient().prefetchQuery({
+    queryKey: [BONUS_QUERY_KEY],
+    queryFn: bonusGetQueryFunction,
+  })
+}
+
+const bonusGetQueryFunction = async ({ signal }: { signal: AbortSignal }): Promise<Bonus[]> => {
+  const response = await api.get<Bonus[]>('/api/v1/bonus', { signal })
+
+  return response.data
 }
 
 const invalidateBonusGetQueryDebounced = asyncDebounce((client: QueryClient) =>
