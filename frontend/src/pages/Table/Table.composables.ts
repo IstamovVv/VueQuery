@@ -79,6 +79,10 @@ export const useTableQuery = (deps: UseTableGetQueryDependencies): UseTableQuery
   })
 }
 
+const getNormalizedDate = (): Date => {
+  return new Date(new Date().setHours(0, 0, 0, 0));
+}
+
 export const useTableFilters = (): UseTableFiltersReturnType => {
   const { model, reset } = useSearchParametersModel<TableFiltersDefinition>({
     search: {
@@ -93,11 +97,11 @@ export const useTableFilters = (): UseTableFiltersReturnType => {
       validate: (v: number) => v >= 0,
     },
     dateFrom: {
-      default: () => new Date(Date.now() - 10 * 365 * 24 * 60 * 60 * 1000), // now - 5 years
+      default: () => new Date(getNormalizedDate().getTime() - 10 * 365 * 24 * 60 * 60 * 1000),
       validate: (v: Date) => !Number.isNaN(v.getTime())
     },
     dateTo: {
-      default: () => new Date(),
+      default: () => getNormalizedDate(),
       validate: (v: Date) => !Number.isNaN(v.getTime())
     },
     name: {
