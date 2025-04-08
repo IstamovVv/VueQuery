@@ -19,6 +19,7 @@ export const useConfigurationQuery = (): UseConfigurationQueryReturnType => {
 
       return response.data
     },
+    retry: 0,
   })
 }
 

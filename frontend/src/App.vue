@@ -9,7 +9,9 @@ const {
   prefetch,
 } = useApp()
 
-prefetch()
+if (authorized.value) {
+  prefetch()
+}
 </script>
 
 <template>
