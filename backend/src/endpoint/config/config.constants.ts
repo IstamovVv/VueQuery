@@ -11,3 +11,6 @@ export const MAX_ERROR_CHANCE = 100
 export const DEFAULT_REQUEST_DELAY_MS = 1000
 export const MIN_REQUEST_DELAY_MS = 0
 export const MAX_REQUEST_DELAY_MS = 60 * 60 * 1000
+
+export const DEFAULT_CACHE_STALE_TIME = 0
+export const MIN_CACHE_STALE_TIME = 0

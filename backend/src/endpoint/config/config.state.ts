@@ -1,4 +1,5 @@
 import {
+  DEFAULT_CACHE_STALE_TIME,
   DEFAULT_REQUEST_DELAY_MS,
   DEFAULT_TOKEN_LIFETIME_MS,
   MIN_ERROR_CHANCE,
@@ -9,6 +10,7 @@ const config = {
   errorChance: MIN_ERROR_CHANCE,
   requestDelay: DEFAULT_REQUEST_DELAY_MS,
   tokenLifeTime: DEFAULT_TOKEN_LIFETIME_MS,
+  staleTime: DEFAULT_CACHE_STALE_TIME,
 }
 
 export const useConfig = (): UseConfigReturnType => {

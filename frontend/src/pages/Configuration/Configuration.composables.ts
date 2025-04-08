@@ -1,28 +1,24 @@
-import type { DefaultError } from '@tanstack/query-core';
-import { type MutationOptions, type QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
+import { useQueryClient } from '@tanstack/vue-query';
 import { computed, reactive, watch } from 'vue';
 
-import { api } from '@/api';
+import { useConfiguration } from '@/composables/useConfiguration/useConfiguration.ts';
 import {
-  CONFIGURATION_QUERY_KEY,
-  MAX_ERROR_CHANCE, MAX_REQUEST_DELAY,
-  MAX_TOKEN_LIFETIME,
-  MIN_ERROR_CHANCE, MIN_REQUEST_DELAY,
+  MAX_ERROR_CHANCE,
+  MAX_REQUEST_DELAY,
+  MAX_TOKEN_LIFETIME, MIN_CACHE_STALE_TIME,
+  MIN_ERROR_CHANCE,
+  MIN_REQUEST_DELAY,
   MIN_TOKEN_LIFETIME
 } from '@/pages/Configuration/Configuration.constants.ts';
-import {
-  type AppConfiguration,
-  type UseConfigurationMutationReturnType,
-  type UseConfigurationPage,
-  type UseConfigurationQueryReturnType
-} from '@/pages/Configuration/Configuration.types.ts';
+import { type AppConfiguration, type UseConfigurationPage } from '@/pages/Configuration/Configuration.types.ts';
 import { showErrorMessage, showSuccessMessage } from '@/utils/popup';
 
 export const useConfigurationPage = (): UseConfigurationPage => {
   const form = reactive<AppConfiguration>({
     tokenLifeTime: 0,
     requestDelay: 0,
-    errorChance: 0
+    errorChance: 0,
+    staleTime: 0,
   })
 
   const tokenLifetimeProxy = computed<number>({
@@ -52,14 +48,24 @@ export const useConfigurationPage = (): UseConfigurationPage => {
     }
   })
 
-  const queryClient = useQueryClient()
-  const query = useConfigurationQuery()
+  const staleTimeProxy = computed<number>({
+    get() {
+      return form.staleTime;
+    },
+    set(v: number) {
+      form.staleTime = Math.max(v, MIN_CACHE_STALE_TIME)
+    }
+  })
+
+  const queryClient = useQueryClient();
+  const { query, mutation } = useConfiguration(queryClient)
 
   watch(query.data, d => {
     if (d) {
       form.errorChance = d.errorChance
       form.requestDelay = d.requestDelay
       form.tokenLifeTime = d.tokenLifeTime
+      form.staleTime = d.staleTime
     }
   }, { immediate: true })
 
@@ -70,16 +76,8 @@ export const useConfigurationPage = (): UseConfigurationPage => {
 
     return form.tokenLifeTime !== query.data.value.tokenLifeTime ||
       form.errorChance !== query.data.value.errorChance ||
-      form.requestDelay !== query.data.value.requestDelay
-  })
-
-  const mutation = useConfigurationMutation(queryClient, {
-    onSuccess() {
-      showSuccessMessage('Configuration successfully saved')
-    },
-    onError() {
-      showErrorMessage('Failed to save configuration')
-    }
+      form.requestDelay !== query.data.value.requestDelay ||
+      form.staleTime !== query.data.value.staleTime
   })
 
   const saveConfig = (): void => {
@@ -87,6 +85,14 @@ export const useConfigurationPage = (): UseConfigurationPage => {
       errorChance: form.errorChance,
       requestDelay: form.requestDelay,
       tokenLifeTime: form.tokenLifeTime,
+      staleTime: form.staleTime,
+    }, {
+      onSuccess() {
+        showSuccessMessage('Configuration successfully saved')
+      },
+      onError() {
+        showErrorMessage('Failed to save configuration')
+      }
     })
   }
 
@@ -98,33 +104,6 @@ export const useConfigurationPage = (): UseConfigurationPage => {
     token: tokenLifetimeProxy,
     requestDelay: requestDelayProxy,
     errorChance: errorChanceProxy,
+    staleTime: staleTimeProxy,
   }
-}
-
-export const useConfigurationQuery = (): UseConfigurationQueryReturnType => {
-  return useQuery<AppConfiguration>({
-    queryKey: [CONFIGURATION_QUERY_KEY],
-    queryFn: async ({ signal }) => {
-      const response = await api.get<AppConfiguration>('/api/v1/config', { signal })
-
-      return response.data
-    }
-  })
-}
-
-export const useConfigurationMutation = (
-  client: QueryClient,
-  options?: MutationOptions<null, DefaultError, AppConfiguration>
-): UseConfigurationMutationReturnType => {
-  return useMutation<null, DefaultError, AppConfiguration>({
-    mutationFn: async (config: AppConfiguration) => {
-      return api.post('/api/v1/config', config)
-    },
-    ...options,
-    onSuccess: async (...args) => {
-      await client.invalidateQueries({ queryKey: [CONFIGURATION_QUERY_KEY] })
-
-      return options?.onSuccess?.(...args);
-    },
-  })
 }

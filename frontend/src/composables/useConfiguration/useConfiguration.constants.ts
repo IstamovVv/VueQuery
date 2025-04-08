@@ -1,0 +1,1 @@
+export const CONFIGURATION_QUERY_KEY = 'configuration'

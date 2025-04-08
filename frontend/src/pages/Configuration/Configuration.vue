@@ -33,6 +33,14 @@
         />
       </el-form-item>
 
+      <el-form-item label="Cache stale time (ms)">
+        <el-input
+          v-model="staleTime"
+          :disabled="isSavePending"
+          type="number"
+        />
+      </el-form-item>
+
       <el-form-item v-if="hasChanges">
         <el-button
           :class="$style.button"
@@ -61,6 +69,7 @@ const {
   token,
   requestDelay,
   errorChance,
+  staleTime,
 } = useConfigurationPage()
 
 const {

@@ -4,7 +4,7 @@ import { wait } from '../../utils';
 import { useAuth } from '../auth/auth.service';
 import {
   MAX_ERROR_CHANCE, MAX_REQUEST_DELAY_MS,
-  MAX_TOKEN_LIFETIME_SECONDS,
+  MAX_TOKEN_LIFETIME_SECONDS, MIN_CACHE_STALE_TIME,
   MIN_ERROR_CHANCE, MIN_REQUEST_DELAY_MS,
   MIN_TOKEN_LIFETIME_SECONDS
 } from './config.constants';
@@ -30,6 +30,7 @@ export const registerConfig = (app: Express): void => {
       tokenLifeTime: config.tokenLifeTime === 0 ? config.tokenLifeTime : config.tokenLifeTime / 1000,
       errorChance: config.errorChance === 0 ? config.errorChance : config.errorChance * 100,
       requestDelay: config.requestDelay,
+      staleTime: config.staleTime,
     }
 
     response.status(200).json(result)
@@ -48,9 +49,14 @@ export const registerConfig = (app: Express): void => {
       return
     }
 
-    const { tokenLifeTime, requestDelay, errorChance } = request.body
+    const { tokenLifeTime, requestDelay, errorChance, staleTime } = request.body
 
-    if (tokenLifeTime === undefined || requestDelay === undefined || errorChance === undefined) {
+    if (
+      tokenLifeTime === undefined ||
+      requestDelay === undefined ||
+      errorChance === undefined ||
+      staleTime === undefined
+    ) {
       response.status(400).send('invalid request')
 
       return
@@ -74,9 +80,16 @@ export const registerConfig = (app: Express): void => {
       return
     }
 
+    if (staleTime < MIN_CACHE_STALE_TIME) {
+      response.status(400).send('invalid errorChance')
+
+      return
+    }
+
     config.errorChance = errorChance === 0 ? errorChance : errorChance / 100
     config.requestDelay = requestDelay
     config.tokenLifeTime = tokenLifeTime * 1000
+    config.staleTime = staleTime
 
     response.status(200).send()
   })
