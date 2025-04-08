@@ -5,7 +5,7 @@ import type { UsePaginationData, UsePaginationReturnType } from '@/composables/u
 import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
 
 export const usePagination = (limit: number): UsePaginationReturnType => {
-  const data = useSearchParametersModel<UsePaginationData>({
+  const { model } = useSearchParametersModel<UsePaginationData>({
     page: {
       default: DEFAULT_PAGE,
       validate: (value: number) => value >= 1
@@ -17,16 +17,16 @@ export const usePagination = (limit: number): UsePaginationReturnType => {
   }, { key: 'p' })
 
   const page = computed<number>({
-    get: () => data.value.page,
-    set: (value: number) => data.value.page = value
+    get: () => model.value.page,
+    set: (value: number) => model.value.page = value
   })
 
   const total = computed<number>({
-    get: () => data.value.total,
-    set: (value: number) => data.value.total = value
+    get: () => model.value.total,
+    set: (value: number) => model.value.total = value
   })
 
-  const offset = computed<number>(() => (data.value.page-1) * limit)
+  const offset = computed<number>(() => (model.value.page-1) * limit)
 
   return {
     page,

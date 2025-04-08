@@ -16,7 +16,7 @@ import type { ResponseWithTotal } from '@/types';
 
 export const useTablePage = (): UseTablePageReturnType => {
   const { columns } = useTableColumns()
-  const { filterModel } = useTableFilters()
+  const { filterModel, reset: resetFilters } = useTableFilters()
 
   const paginationModel = usePagination(TABLE_QUERY_LIMIT)
   const sortModel = useSort<TableRow>(['id', 'name', 'date', 'count'])
@@ -36,6 +36,7 @@ export const useTablePage = (): UseTablePageReturnType => {
     columns,
     sortModel,
     filterModel,
+    resetFilters,
     paginationModel,
     getTableQueryData,
   }
@@ -79,7 +80,7 @@ export const useTableQuery = (deps: UseTableGetQueryDependencies): UseTableQuery
 }
 
 export const useTableFilters = (): UseTableFiltersReturnType => {
-  const filterModel = useSearchParametersModel<TableFiltersDefinition>({
+  const { model, reset } = useSearchParametersModel<TableFiltersDefinition>({
     search: {
       default: '',
     },
@@ -108,7 +109,8 @@ export const useTableFilters = (): UseTableFiltersReturnType => {
   })
 
   return {
-    filterModel
+    filterModel: model,
+    reset,
   }
 }
 

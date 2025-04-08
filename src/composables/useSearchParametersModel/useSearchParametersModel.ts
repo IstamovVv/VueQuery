@@ -4,7 +4,7 @@ import { ref, toValue, watch } from 'vue';
 
 import type {
   UseSearchParametersModelConfig,
-  UseSearchParametersModelDefinition, UseSearchParametersModelSerializers,
+  UseSearchParametersModelDefinition, UseSearchParametersModelReturnType, UseSearchParametersModelSerializers,
   UseSearchParametersModelSupportedObject
 } from '@/composables/useSearchParametersModel/useSearchParametersModel.types.ts';
 import {
@@ -15,7 +15,7 @@ import {
 export const useSearchParametersModel = <T extends UseSearchParametersModelSupportedObject<T>>(
   definition: UseSearchParametersModelDefinition<T>,
   config?: UseSearchParametersModelConfig
-): Ref<T> => {
+): UseSearchParametersModelReturnType<T> => {
   const key = config?.key || ''
   const removeNullishVariables = config?.removeNullishValues ?? false
   const onError = config?.onError || ((error: unknown) => console.error(`[useSearchParametersModel]: ${error}`))
@@ -28,7 +28,7 @@ export const useSearchParametersModel = <T extends UseSearchParametersModelSuppo
 
   const keys = Object.keys(definition) as (keyof UseSearchParametersModelDefinition<T>)[]
 
-  const data = ref<T>(keys.reduce<T>((accumulator, key) => {
+  const model = ref<T>(keys.reduce<T>((accumulator, key) => {
     accumulator[key] = toValue(definition[key].default)
 
     return accumulator
@@ -67,9 +67,9 @@ export const useSearchParametersModel = <T extends UseSearchParametersModelSuppo
           onError(error)
         }
 
-        data.value[key] = value
+        model.value[key] = value
       } else {
-        data.value[key] = toValue(definition[key].default)
+        model.value[key] = toValue(definition[key].default)
       }
     }
   }
@@ -81,7 +81,16 @@ export const useSearchParametersModel = <T extends UseSearchParametersModelSuppo
   }
 
   watch(searchParameters, p => searchParametersWatchHandler(p), { immediate: true })
-  watch(data, d => dataWatchHandler(d), { immediate: true })
+  watch(model, d => dataWatchHandler(d), { immediate: true })
 
-  return data
+  const reset = (): void => {
+    for (const key of keys) {
+      model.value[key] = toValue(definition[key].default)
+    }
+  }
+
+  return {
+    model,
+    reset,
+  }
 }

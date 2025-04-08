@@ -78,6 +78,10 @@
         </el-form-item>
 
         <div :class="$style.actions">
+          <el-button @click="reset">
+            Reset
+          </el-button>
+
           <el-button @click="hidePopover">
             Cancel
           </el-button>
@@ -105,17 +109,21 @@ import { useTemplateRef } from 'vue';
 
 import type { TableFiltersDefinition } from '@/pages/Table/Table.types.ts';
 import { useTableFilters } from '@/pages/Table/TableFilters/TableFilters.composables.ts';
+import type { TableFiltersEmits } from '@/pages/Table/TableFilters/TableFilters.types.ts';
 import TableFiltersNameSelect from '@/pages/Table/TableFilters/TableFiltersNameSelect/TableFiltersNameSelect.vue';
 
 const _model = defineModel<TableFiltersDefinition>({
   required: true
 })
 
+const emit = defineEmits<TableFiltersEmits>()
+
 const {
   apply,
+  reset,
   search,
   model,
-} = useTableFilters(_model)
+} = useTableFilters(_model, emit)
 
 const popoverRef = useTemplateRef<PopoverInstance>('popover')
 

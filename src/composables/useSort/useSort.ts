@@ -9,7 +9,7 @@ import { isObjectValue } from '@/utils';
 export const useSort = <T extends {
   [K in keyof T]: UseSearchParametersModelSupportedType
 }>(sortable: (keyof T)[]): UseSortReturnType<T> => {
-  const sort = useSearchParametersModel(
+  const { model } = useSearchParametersModel(
     sortable.reduce((accumulator, key) => {
       accumulator[key] = {
         default: SortDirection.None,
@@ -20,13 +20,13 @@ export const useSort = <T extends {
     }, {} as UseSearchParametersModelDefinition<UseSortDataType<T>>), { key: 's' })
 
   const query = computed<string[]>(() => {
-    return Object.entries<SortDirection>(sort.value)
+    return Object.entries<SortDirection>(model.value)
       .filter(([_, direction]) => direction !== SortDirection.None)
       .map(([field, direction]) => stringifySortPair({ field, direction }))
   })
 
   return {
-    sort,
+    sort: model,
     query,
   }
 }

@@ -1,15 +1,18 @@
 import { watchDebounced } from '@vueuse/core';
-import { type ModelRef, ref, watch } from 'vue';
+import { type EmitFn, type ModelRef, ref, watch } from 'vue';
 
 import type { TableFiltersDefinition } from '@/pages/Table/Table.types.ts';
-import type { UseTableFiltersReturnType } from '@/pages/Table/TableFilters/TableFilters.types.ts';
+import type { TableFiltersEmits, UseTableFiltersReturnType } from '@/pages/Table/TableFilters/TableFilters.types.ts';
 
-export const useTableFilters = (model: ModelRef<TableFiltersDefinition>): UseTableFiltersReturnType => {
+export const useTableFilters = (
+  model: ModelRef<TableFiltersDefinition>,
+  emit: EmitFn<TableFiltersEmits>
+): UseTableFiltersReturnType => {
   const modelProxy = ref<TableFiltersDefinition>({ ...model.value })
 
   watch(model, m => {
     modelProxy.value = { ...m }
-  })
+  }, { deep: true })
 
   const search = ref<string>('')
 
@@ -21,8 +24,13 @@ export const useTableFilters = (model: ModelRef<TableFiltersDefinition>): UseTab
     model.value = { ...modelProxy.value }
   }
 
+  const reset = (): void => {
+    emit('reset')
+  }
+
   return {
     apply,
+    reset,
     search,
     model: modelProxy,
   }

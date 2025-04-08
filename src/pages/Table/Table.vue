@@ -1,6 +1,9 @@
 <template>
   <div :class="$style.header">
-    <TableFilters v-model="filterModel" />
+    <TableFilters
+      v-model="filterModel"
+      @reset="resetFilters"
+    />
   </div>
 
   <div v-if="isError">
@@ -46,6 +49,7 @@ const {
   columns,
   sortModel,
   filterModel,
+  resetFilters,
   paginationModel,
   getTableQueryData,
 } = useTablePage()

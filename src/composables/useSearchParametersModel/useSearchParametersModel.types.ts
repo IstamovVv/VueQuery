@@ -1,4 +1,5 @@
 import type { MaybeRefOrGetter } from '@vueuse/core';
+import type { Ref } from 'vue';
 
 export type UseSearchParametersModelSupportedType = string | number | boolean | object | null
 
@@ -15,6 +16,11 @@ export type UseSearchParametersModelDefinition<T> = {
     default: MaybeRefOrGetter<T[K]>
     validate?: (value: T[K]) => boolean
   }
+}
+
+export interface UseSearchParametersModelReturnType<T> {
+  model: Ref<T>
+  reset: () => void
 }
 
 export interface UseSearchParametersModelConfig {

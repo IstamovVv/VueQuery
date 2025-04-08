@@ -40,6 +40,7 @@ export interface UseTablePageReturnType {
   columns: UseTableColumnsReturnType['columns']
   sortModel: UseSortReturnType<TableRow>
   filterModel: UseTableFiltersReturnType['filterModel']
+  resetFilters: () => void
   paginationModel: UsePaginationReturnType
   getTableQueryData: UseTableQueryReturnType
 }
@@ -48,6 +49,7 @@ export type UseTableQueryReturnType = UseQueryReturnType<ResponseWithTotal<Table
 
 export interface UseTableFiltersReturnType {
   filterModel: Ref<TableFiltersDefinition>
+  reset: () => void
 }
 
 export interface UseTableColumnsReturnType {
