@@ -1,0 +1,23 @@
+services:
+  frontend:
+    build:
+      context: frontend
+    ports:
+      - '5173:5173'
+    container_name: cdp-vue-query-frontend
+    depends_on:
+      - backend
+    networks:
+      - cdp
+  backend:
+    build:
+      context: backend
+    ports:
+      - '8000:8000'
+    container_name: cdp-vue-query-backend
+    networks:
+      - cdp
+networks:
+  cdp:
+    driver: bridge
+
