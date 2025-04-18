@@ -1,3 +1,4 @@
+import type { UrlParams } from '@vueuse/core';
 import { computed } from 'vue';
 
 import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
@@ -8,8 +9,8 @@ import { isObjectValue } from '@/utils';
 
 export const useSort = <T extends {
   [K in keyof T]: UseSearchParametersModelSupportedType
-}>(sortable: (keyof T)[]): UseSortReturnType<T> => {
-  const { model } = useSearchParametersModel(
+}>(searchParameters: UrlParams, sortable: (keyof T)[]): UseSortReturnType<T> => {
+  const { model } = useSearchParametersModel(searchParameters,
     sortable.reduce((accumulator, key) => {
       accumulator[key] = {
         default: SortDirection.None,

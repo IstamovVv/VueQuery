@@ -1,4 +1,4 @@
-import { type UrlParams, useUrlSearchParams } from '@vueuse/core';
+import { type UrlParams } from '@vueuse/core';
 import type { Ref } from 'vue';
 import { ref, toValue, watch } from 'vue';
 
@@ -13,14 +13,13 @@ import {
 } from '@/composables/useSearchParametersModel/useSearchParametersModel.utilities.ts';
 
 export const useSearchParametersModel = <T extends UseSearchParametersModelSupportedObject<T>>(
+  searchParameters: UrlParams,
   definition: UseSearchParametersModelDefinition<T>,
   config?: UseSearchParametersModelConfig
 ): UseSearchParametersModelReturnType<T> => {
   const key = config?.key || ''
   const removeNullishVariables = config?.removeNullishValues ?? false
   const onError = config?.onError || ((error: unknown) => console.error(`[useSearchParametersModel]: ${error}`))
-
-  const searchParameters = useUrlSearchParams('history')
 
   const constructSearchParameterName = (dataKey: string): string => {
     return key ? `${key}:${dataKey}` : dataKey
@@ -80,8 +79,8 @@ export const useSearchParametersModel = <T extends UseSearchParametersModelSuppo
     }
   }
 
-  watch(searchParameters, p => searchParametersWatchHandler(p), { immediate: true })
-  watch(model, d => dataWatchHandler(d), { immediate: true })
+  watch(searchParameters, p => searchParametersWatchHandler(p), { deep: true, immediate: true, flush: 'sync' })
+  watch(model, d => dataWatchHandler(d), { deep: true, immediate: true })
 
   const reset = (): void => {
     for (const key of keys) {

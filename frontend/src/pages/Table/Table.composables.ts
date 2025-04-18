@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/vue-query';
+import { type UrlParams, useUrlSearchParams } from '@vueuse/core';
 import { toValue, watch } from 'vue';
 
 import { api } from '@/api';
@@ -15,11 +16,13 @@ import type {
 import type { ResponseWithTotal } from '@/types';
 
 export const useTablePage = (): UseTablePageReturnType => {
-  const { columns } = useTableColumns()
-  const { filterModel, reset: resetFilters } = useTableFilters()
+  const searchParameters = useUrlSearchParams('history')
 
-  const paginationModel = usePagination(TABLE_QUERY_LIMIT)
-  const sortModel = useSort<TableRow>(['id', 'name', 'date', 'count'])
+  const { columns } = useTableColumns()
+  const { filterModel, reset: resetFilters } = useTableFilters(searchParameters)
+
+  const paginationModel = usePagination(searchParameters, TABLE_QUERY_LIMIT)
+  const sortModel = useSort<TableRow>(searchParameters, ['id', 'name', 'date', 'count'])
 
   const getTableQueryData = useTableQuery({
     offset: paginationModel.offset,
@@ -30,7 +33,7 @@ export const useTablePage = (): UseTablePageReturnType => {
 
   watch(getTableQueryData.data, v => {
     if (v) paginationModel.total.value = v.totalSize;
-  })
+  }, { immediate: true })
 
   return {
     columns,
@@ -83,8 +86,8 @@ const getNormalizedDate = (): Date => {
   return new Date(new Date().setHours(0, 0, 0, 0));
 }
 
-export const useTableFilters = (): UseTableFiltersReturnType => {
-  const { model, reset } = useSearchParametersModel<TableFiltersDefinition>({
+export const useTableFilters = (searchParameters: UrlParams): UseTableFiltersReturnType => {
+  const { model, reset } = useSearchParametersModel<TableFiltersDefinition>(searchParameters,{
     search: {
       default: '',
     },

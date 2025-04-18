@@ -1,11 +1,12 @@
+import type { UrlParams } from '@vueuse/core';
 import { computed } from 'vue';
 
 import { DEFAULT_PAGE, DEFAULT_TOTAL } from '@/composables/usePagination/usePagination.constants.ts';
 import type { UsePaginationData, UsePaginationReturnType } from '@/composables/usePagination/usePagination.types.ts';
 import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
 
-export const usePagination = (limit: number): UsePaginationReturnType => {
-  const { model } = useSearchParametersModel<UsePaginationData>({
+export const usePagination = (searchParameters: UrlParams, limit: number): UsePaginationReturnType => {
+  const { model } = useSearchParametersModel<UsePaginationData>(searchParameters, {
     page: {
       default: DEFAULT_PAGE,
       validate: (value: number) => value >= 1
