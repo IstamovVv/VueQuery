@@ -79,8 +79,8 @@ export const useSearchParametersModel = <T extends UseSearchParametersModelSuppo
     }
   }
 
-  watch(searchParameters, p => searchParametersWatchHandler(p), { deep: true, immediate: true, flush: 'sync' })
-  watch(model, d => dataWatchHandler(d), { deep: true, immediate: true })
+  watch(searchParameters, p => searchParametersWatchHandler(p), { immediate: true, flush: 'sync' })
+  watch(model, d => dataWatchHandler(d), { immediate: true })
 
   const reset = (): void => {
     for (const key of keys) {
