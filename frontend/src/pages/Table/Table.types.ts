@@ -33,7 +33,7 @@ export interface UseTableGetQueryDependencies {
   offset: MaybeRef<number>
   limit: MaybeRef<number>
   sort: MaybeRef<string[]>
-  filter: MaybeRef<TableFiltersDefinition>
+  filter: UseTableFiltersReturnType['filterModel']
 }
 
 export interface UseTablePageReturnType {
@@ -48,7 +48,14 @@ export interface UseTablePageReturnType {
 export type UseTableQueryReturnType = UseQueryReturnType<ResponseWithTotal<TableRow>, DefaultError>
 
 export interface UseTableFiltersReturnType {
-  filterModel: Ref<TableFiltersDefinition>
+  filterModel: {
+    search: Ref<string>,
+    idFrom: Ref<number | undefined>,
+    idTo: Ref<number | undefined>,
+    dateFrom: Ref<Date>,
+    dateTo: Ref<Date>,
+    name: Ref<string[]>
+  },
   reset: () => void
 }
 

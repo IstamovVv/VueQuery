@@ -15,6 +15,7 @@
     "@tanstack/vue-query": "^5.72.0",
     "@types/lodash-es": "^4.17.12",
     "@vueuse/core": "^13.0.0",
+    "@vueuse/router": "^13.1.0",
     "axios": "^1.8.4",
     "element-plus": "^2.9.7",
     "lodash-es": "^4.17.21",

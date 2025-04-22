@@ -24,7 +24,7 @@
       <template #header>
         <div :class="$style.tableHeader">
           {{ column.label }}
-          <TableHeaderSort v-model="sort[column.prop]" />
+          <TableHeaderSort v-model="model[column.prop].value" />
         </div>
       </template>
     </el-table-column>
@@ -55,7 +55,7 @@ const {
 } = useTablePage()
 
 const {
-  sort
+  model
 } = sortModel
 
 const {

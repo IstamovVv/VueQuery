@@ -3,7 +3,7 @@
     :class="$style.icon"
     @click="next"
   >
-    <DCaret v-if="model === SortDirection.None" />
+    <DCaret v-if="model === undefined" />
 
     <CaretTop v-else-if="model === SortDirection.ASC" />
 
@@ -16,13 +16,13 @@ import { CaretBottom, CaretTop, DCaret } from '@element-plus/icons-vue';
 
 import { SortDirection } from '@/composables/useSort/useSort.types.ts';
 
-const model = defineModel<SortDirection>({
+const model = defineModel<SortDirection | undefined>({
   required: true
 })
 
-const values = [SortDirection.None, SortDirection.ASC, SortDirection.DESC];
+const values = [undefined, SortDirection.ASC, SortDirection.DESC];
 
-const next = () => {
+const next = (): void => {
   const currentIndex = values.indexOf(model.value)
   const nextIndex = (currentIndex + 1) % values.length
 

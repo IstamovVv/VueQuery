@@ -18,7 +18,7 @@ export const registerTable = (app: Express): void => {
 
     await wait(config.requestDelay);
 
-    if (!checkAuth(request, response)) return
+    //if (!checkAuth(request, response)) return
 
     if (Math.random() < config.errorChance) {
       response.status(500).send('unexpected error')
@@ -58,12 +58,12 @@ export const registerTable = (app: Express): void => {
             } else {
               response.status(400).send('invalid sort')
 
-              continue
+              return
             }
           } catch {
             response.status(400).send('invalid sort')
 
-            continue
+            return
           }
         }
       }

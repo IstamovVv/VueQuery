@@ -2,8 +2,7 @@ import type { ComputedRef, Ref } from 'vue';
 
 export enum SortDirection {
   ASC = 'ASC',
-  DESC = 'DESC',
-  None = ''
+  DESC = 'DESC'
 }
 
 export interface SortPair<T extends string> {
@@ -11,11 +10,11 @@ export interface SortPair<T extends string> {
   direction: SortDirection,
 }
 
-export type UseSortDataType<T> = {
-  [K in keyof T]: SortDirection
+export type SortModel<T> = {
+  [K in keyof T]: Ref<SortDirection | undefined>
 }
 
 export interface UseSortReturnType<T> {
-  sort: Ref<UseSortDataType<T>>
+  model: SortModel<T>
   query: ComputedRef<string[]>
 }

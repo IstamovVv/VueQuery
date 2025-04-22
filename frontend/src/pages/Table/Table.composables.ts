@@ -1,28 +1,23 @@
 import { useQuery } from '@tanstack/vue-query';
-import { type UrlParams, useUrlSearchParams } from '@vueuse/core';
+import { useRouteQuery } from '@vueuse/router';
 import { toValue, watch } from 'vue';
 
 import { api } from '@/api';
 import { usePagination } from '@/composables/usePagination/usePagination.ts';
-import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
 import { useSort } from '@/composables/useSort/useSort.ts';
 import { TABLE_KEY, TABLE_QUERY_LIMIT } from '@/pages/Table/Table.constants.ts';
 import type {
   TableColumn,
-  TableFiltersDefinition,
   TableRow, UseTableColumnsReturnType, UseTableFiltersReturnType,
   UseTableGetQueryDependencies, UseTablePageReturnType, UseTableQueryReturnType
 } from '@/pages/Table/Table.types.ts';
 import type { ResponseWithTotal } from '@/types';
 
 export const useTablePage = (): UseTablePageReturnType => {
-  const searchParameters = useUrlSearchParams('history')
-
   const { columns } = useTableColumns()
-  const { filterModel, reset: resetFilters } = useTableFilters(searchParameters)
-
-  const paginationModel = usePagination(searchParameters, TABLE_QUERY_LIMIT)
-  const sortModel = useSort<TableRow>(searchParameters, ['id', 'name', 'date', 'count'])
+  const paginationModel = usePagination(TABLE_QUERY_LIMIT)
+  const sortModel = useSort<TableRow>(['id', 'name', 'date', 'count'])
+  const { filterModel, reset: resetFilters } = useTableFilters()
 
   const getTableQueryData = useTableQuery({
     offset: paginationModel.offset,
@@ -49,27 +44,28 @@ export const useTableQuery = (deps: UseTableGetQueryDependencies): UseTableQuery
   return useQuery<ResponseWithTotal<TableRow>>({
     queryKey: [TABLE_KEY, ...Object.values(deps)],
     queryFn: async({ signal }) => {
-      const filterValue = toValue(deps.filter)
-
       const parameters: any = {
         offset: toValue(deps.offset),
         limit: toValue(deps.limit),
         sort: toValue(deps.sort),
-        dateFrom: filterValue.dateFrom,
-        dateTo: filterValue.dateTo,
+        dateFrom: deps.filter.dateFrom.value,
+        dateTo: deps.filter.dateTo.value,
       }
 
-      if (filterValue.idTo > 0 && filterValue.idFrom > 0) {
-        parameters.idFrom = filterValue.idFrom
-        parameters.idTo = filterValue.idTo
+      if (
+        deps.filter.idTo.value && deps.filter.idTo.value > 0 &&
+        deps.filter.idFrom.value && deps.filter.idFrom.value > 0
+      ) {
+        parameters.idFrom = deps.filter.idFrom.value
+        parameters.idTo = deps.filter.idTo.value
       }
 
-      if (filterValue.search) {
-        parameters.search = filterValue.search
+      if (deps.filter.search.value) {
+        parameters.search = deps.filter.search.value
       }
 
-      if (filterValue.name.length > 0) {
-        parameters.name = filterValue.name
+      if (deps.filter.name.value.length > 0) {
+        parameters.name = deps.filter.name.value
       }
 
       const response = await api.get<ResponseWithTotal<TableRow>>('/api/v1/table', {
@@ -86,34 +82,27 @@ const getNormalizedDate = (): Date => {
   return new Date(new Date().setHours(0, 0, 0, 0));
 }
 
-export const useTableFilters = (searchParameters: UrlParams): UseTableFiltersReturnType => {
-  const { model, reset } = useSearchParametersModel<TableFiltersDefinition>(searchParameters,{
-    search: {
-      default: '',
-    },
-    idFrom: {
-      default: 0,
-      validate: (v: number) => v >= 0,
-    },
-    idTo: {
-      default: 0,
-      validate: (v: number) => v >= 0,
-    },
-    dateFrom: {
-      default: () => new Date(getNormalizedDate().getTime() - 10 * 365 * 24 * 60 * 60 * 1000),
-      validate: (v: Date) => !Number.isNaN(v.getTime())
-    },
-    dateTo: {
-      default: () => getNormalizedDate(),
-      validate: (v: Date) => !Number.isNaN(v.getTime())
-    },
-    name: {
-      default: () => [],
-    }
-  }, {
-    key: 'tf',
-    removeNullishValues: true,
-  })
+export const useTableFilters = (): UseTableFiltersReturnType => {
+  const getDefaultDateFrom = (): Date => new Date(getNormalizedDate().getTime() - 10 * 365 * 24 * 60 * 60 * 1000)
+  const getDefaultDateTo = (): Date => getNormalizedDate()
+
+  const model = {
+    search: useRouteQuery<string>('search', ''),
+    idFrom: useRouteQuery<string, number | undefined>('id', undefined, { transform: Number }),
+    idTo: useRouteQuery<string, number | undefined>('id', undefined, { transform: Number }),
+    dateFrom: useRouteQuery<string, Date>('dateFrom',getDefaultDateFrom().toISOString()),
+    dateTo: useRouteQuery<string, Date>('dateFrom', getDefaultDateTo().toISOString()),
+    name: useRouteQuery<string[]>('name', []),
+  }
+
+  const reset = (): void => {
+    model.search.value = ''
+    model.idFrom.value = undefined
+    model.idTo.value = undefined
+    model.dateFrom.value = getDefaultDateFrom()
+    model.dateTo.value = getDefaultDateTo()
+    model.name.value = []
+  }
 
   return {
     filterModel: model,

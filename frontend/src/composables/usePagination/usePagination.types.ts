@@ -1,4 +1,4 @@
-import type { ComputedRef, WritableComputedRef } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 
 export interface UsePaginationData {
   page: number,
@@ -6,7 +6,7 @@ export interface UsePaginationData {
 }
 
 export interface UsePaginationReturnType {
-  page: WritableComputedRef<number>
-  total: WritableComputedRef<number>
+  page: Ref<number>
+  total: Ref<number>
   offset: ComputedRef<number>
 }

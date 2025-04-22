@@ -1,33 +1,33 @@
-import type { UrlParams } from '@vueuse/core';
+import { useRouteQuery } from '@vueuse/router';
 import { computed } from 'vue';
 
-import { useSearchParametersModel } from '@/composables/useSearchParametersModel/useSearchParametersModel.ts';
-import type { UseSearchParametersModelDefinition, UseSearchParametersModelSupportedType } from '@/composables/useSearchParametersModel/useSearchParametersModel.types.ts';
-import type { SortPair, UseSortDataType, UseSortReturnType } from '@/composables/useSort/useSort.types.ts';
+import type { SortModel, SortPair, UseSortReturnType } from '@/composables/useSort/useSort.types.ts';
 import { SortDirection } from '@/composables/useSort/useSort.types.ts';
-import { isObjectValue } from '@/utils';
 
-export const useSort = <T extends {
-  [K in keyof T]: UseSearchParametersModelSupportedType
-}>(searchParameters: UrlParams, sortable: (keyof T)[]): UseSortReturnType<T> => {
-  const { model } = useSearchParametersModel(searchParameters,
-    sortable.reduce((accumulator, key) => {
-      accumulator[key] = {
-        default: SortDirection.None,
-        validate: (value: SortDirection) => isObjectValue(SortDirection, value)
-      }
+export const useSort = <T extends object>(sortable: (keyof T)[]): UseSortReturnType<T> => {
+  const model = {} as SortModel<T>
 
-      return accumulator
-    }, {} as UseSearchParametersModelDefinition<UseSortDataType<T>>), { key: 's' })
+  for (const key of sortable) {
+    model[key] = useRouteQuery<SortDirection | undefined>(`sort:${String(key)}`)
+  }
 
   const query = computed<string[]>(() => {
-    return Object.entries<SortDirection>(model.value)
-      .filter(([_, direction]) => direction !== SortDirection.None)
-      .map(([field, direction]) => stringifySortPair({ field, direction }))
+    const result = []
+
+    for (const key of sortable) {
+      if (model[key].value) {
+        result.push(stringifySortPair({
+          field: key as string,
+          direction: model[key].value
+        }))
+      }
+    }
+
+    return result
   })
 
   return {
-    sort: model,
+    model,
     query,
   }
 }
